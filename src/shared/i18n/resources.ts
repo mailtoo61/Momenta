@@ -4,7 +4,16 @@ export const resources = {
       appName: "Momenta",
       ok: "Tamam",
       cancel: "Vazgec",
-      loading: "Yukleniyor"
+      loading: "Yukleniyor",
+      retry: "Tekrar dene",
+      continue: "Devam et"
+    },
+    appStates: {
+      loadingTitle: "Momenta hazirlaniyor",
+      loadingDescription: "Her sey guvenle baslatiliyor.",
+      errorTitle: "Sakin kalalim",
+      emptyTitle: "Burasi henuz sessiz",
+      emptyDescription: "Momenta onemli anlarin icin hazir."
     },
     home: {
       title: "Ana sayfa",
@@ -143,7 +152,16 @@ export const resources = {
       appName: "Momenta",
       ok: "OK",
       cancel: "Cancel",
-      loading: "Loading"
+      loading: "Loading",
+      retry: "Try again",
+      continue: "Continue"
+    },
+    appStates: {
+      loadingTitle: "Momenta is getting ready",
+      loadingDescription: "Everything is starting safely.",
+      errorTitle: "Let us keep this calm",
+      emptyTitle: "This space is quiet for now",
+      emptyDescription: "Momenta is ready for the moments that matter."
     },
     home: {
       title: "Home",
