@@ -6,7 +6,12 @@ import {
   type AppBootstrapInput,
   type SafeAppBootstrapResult
 } from "../bootstrap";
-import { appConfig, type AppEnvironment, type AppThemePreference } from "../../shared/config";
+import {
+  appConfig,
+  type AppEnvironment,
+  type AppThemePreference,
+  type PersistenceMode
+} from "../../shared/config";
 import type { AppError } from "../../shared/errors";
 import type { FeatureFlags } from "../../shared/featureFlags";
 import type { ServiceContainer } from "../../services";
@@ -18,6 +23,7 @@ export type AppRuntimeBootstrapContext = Readonly<{
   environment: AppEnvironment;
   locale: string;
   featureFlags: FeatureFlags;
+  persistenceMode: PersistenceMode;
   services: ServiceContainer;
   providerRegistryHealth: Readonly<Record<string, string>>;
   themePreference: AppThemePreference;
@@ -120,6 +126,7 @@ export function createAppRuntimeBootstrapContext(
     environment: bootstrap.environment,
     locale: bootstrap.locale,
     featureFlags: bootstrap.featureFlags,
+    persistenceMode: bootstrap.persistenceMode,
     services: bootstrap.services,
     providerRegistryHealth: bootstrap.providerRegistryHealth,
     themePreference: appConfig.defaultTheme,

@@ -11,6 +11,7 @@ import {
   selectIsRuntimeReady,
   selectRuntimeEnvironment,
   selectRuntimeError,
+  selectRuntimePersistenceMode,
   selectRuntimeServices,
   selectRuntimeStatus,
   type AppRuntimeState
@@ -55,6 +56,7 @@ describe("app runtime context", () => {
     expect(selectRuntimeStatus(state)).toBe("ready");
     expect(selectIsRuntimeReady(state)).toBe(true);
     expect(selectRuntimeEnvironment(state)).toBe("development");
+    expect(selectRuntimePersistenceMode(state)).toBe("inMemory");
     expect(selectFeatureFlags(state)).toBe(defaultFeatureFlags);
     expect(selectCurrentLocale(state)).toBe("tr");
     expect(selectCurrentThemePreference(state)).toBe("system");
@@ -88,6 +90,7 @@ describe("app runtime context", () => {
       "environment",
       "locale",
       "featureFlags",
+      "persistenceMode",
       "services",
       "providerRegistryHealth",
       "themePreference",

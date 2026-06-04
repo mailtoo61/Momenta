@@ -6,7 +6,8 @@ export const resources = {
       cancel: "Vazgec",
       loading: "Yukleniyor",
       retry: "Tekrar dene",
-      continue: "Devam et"
+      continue: "Devam et",
+      placeholder: "Hazirlik"
     },
     appStates: {
       loadingTitle: "Momenta hazirlaniyor",
@@ -17,22 +18,59 @@ export const resources = {
     },
     home: {
       title: "Ana sayfa",
+      shellSubtitle: "Bugun neyin onemli oldugunu sakin bir bakisla gor.",
+      upcomingTitle: "Yaklasanlar",
+      upcomingDescription: "Yaklasan onemli anlar burada gorunecek.",
+      overdueTitle: "Gecikenler",
+      overdueDescription: "Ilgi isteyen anlar nazikce burada toplanacak.",
+      recentTitle: "Son anlar",
+      recentDescription: "Ekledigin son anlar burada yer alacak.",
+      insightTitle: "Kisa icgoru",
+      insightDescription: "Zamanla ilgili destekleyici ozetler burada gorunecek.",
+      quickAddTitle: "Hizli ekle",
+      quickAddDescription: "Ilk anini ekleme akisi bir sonraki fazda baglanacak.",
+      quickAddAction: "An ekle",
       subtitle: "Momenta hazirlanıyor."
     },
     onboarding: {
       title: "Momenta'ya hos geldin",
+      shellSubtitle: "Hatirlaman gerekenleri sakin, guvenli ve sade bir yerde tut.",
+      valueMomentsTitle: "Onemli anlari hatirla",
+      valueMomentsDescription: "Muayene, randevu, aile ve bakim gibi hayat tarihlerini kaybetme.",
+      valueTimeTitle: "Zamanin akisini gor",
+      valueTimeDescription: "Ne kadar zaman gecti ve ne kadar kaldi sorularini hizlica anla.",
+      valueWidgetsTitle: "Widgetlarla farkinda kal",
+      valueWidgetsDescription: "Hazirlanan ozetler gelecekte ana ekranda sakin sekilde gorunecek.",
+      getStartedAction: "Baslayalim",
       subtitle: "Baslangic deneyimi daha sonra eklenecek."
     },
     settings: {
       title: "Ayarlar",
+      shellSubtitle: "Momenta deneyimini tek, duzenli bir yerden yonet.",
       subtitle: "Ayarlar altyapisi hazir."
     },
     paywall: {
       title: "Premium",
+      shellSubtitle: "Momenta buyudukce daha fazla deger acacak sakin premium alan.",
+      plansTitle: "Planlar",
+      plansDescription: "Plan secimi simdilik yalnizca gosterim icin hazir.",
+      valueTitle: "Premium degeri",
+      valueDescription: "Premium kapsam daha sonra guvenli satin alma akisiyle baglanacak.",
+      premiumWidgets: "Premium widgetlar",
+      moreMoments: "Daha fazla an",
+      premiumThemes: "Premium temalar",
+      futureSyncReady: "Gelecek senkron hazirligi",
+      restorePurchase: "Satinalmayi geri yukle",
       subtitle: "Premium deneyimi daha sonra eklenecek."
     },
     debug: {
       title: "Debug",
+      shellSubtitle: "Guvenli calisma durumu ozeti.",
+      runtimeStatus: "Calisma durumu",
+      environment: "Ortam",
+      persistenceMode: "Kalicilik modu",
+      featureFlags: "Ozellik bayraklari",
+      unavailable: "Kullanilamiyor",
       subtitle: "Gelistirme araclari hazir."
     },
     categories: {
@@ -154,7 +192,8 @@ export const resources = {
       cancel: "Cancel",
       loading: "Loading",
       retry: "Try again",
-      continue: "Continue"
+      continue: "Continue",
+      placeholder: "Placeholder"
     },
     appStates: {
       loadingTitle: "Momenta is getting ready",
@@ -165,22 +204,59 @@ export const resources = {
     },
     home: {
       title: "Home",
+      shellSubtitle: "See what matters today with a calm, focused glance.",
+      upcomingTitle: "Upcoming",
+      upcomingDescription: "Important moments coming soon will appear here.",
+      overdueTitle: "Overdue",
+      overdueDescription: "Moments that need attention will gather here gently.",
+      recentTitle: "Recent Moments",
+      recentDescription: "Your recently added moments will appear here.",
+      insightTitle: "Insight",
+      insightDescription: "Supportive time-aware summaries will appear here.",
+      quickAddTitle: "Quick Add",
+      quickAddDescription: "The first moment flow will connect in a later phase.",
+      quickAddAction: "Add moment",
       subtitle: "Momenta is getting ready."
     },
     onboarding: {
       title: "Welcome to Momenta",
+      shellSubtitle: "Keep what matters in a calm, private, and simple place.",
+      valueMomentsTitle: "Remember important moments",
+      valueMomentsDescription: "Keep track of inspections, appointments, family, and care dates.",
+      valueTimeTitle: "See time passing",
+      valueTimeDescription: "Understand how long it has been and how much time remains.",
+      valueWidgetsTitle: "Stay aware with widgets",
+      valueWidgetsDescription: "Prepared summaries will later stay visible from the Home Screen.",
+      getStartedAction: "Get started",
       subtitle: "The onboarding experience will be added later."
     },
     settings: {
       title: "Settings",
+      shellSubtitle: "Manage the Momenta experience from one organized place.",
       subtitle: "Settings infrastructure is ready."
     },
     paywall: {
       title: "Premium",
+      shellSubtitle: "A calm premium space ready for future value as Momenta grows.",
+      plansTitle: "Plans",
+      plansDescription: "Plan selection is display-only for now.",
+      valueTitle: "Premium value",
+      valueDescription: "Premium access will connect through a safe purchase flow later.",
+      premiumWidgets: "Premium widgets",
+      moreMoments: "More moments",
+      premiumThemes: "Premium themes",
+      futureSyncReady: "Future sync-ready",
+      restorePurchase: "Restore purchase",
       subtitle: "The premium experience will be added later."
     },
     debug: {
       title: "Debug",
+      shellSubtitle: "Safe runtime status summary.",
+      runtimeStatus: "Runtime status",
+      environment: "Environment",
+      persistenceMode: "Persistence mode",
+      featureFlags: "Feature flags",
+      unavailable: "Unavailable",
       subtitle: "Development tools are ready."
     },
     categories: {

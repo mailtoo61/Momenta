@@ -204,6 +204,7 @@ function readyBootstrapContext(): AppRuntimeBootstrapContext {
     environment: "development",
     locale: "tr",
     featureFlags: defaultFeatureFlags,
+    persistenceMode: "inMemory",
     services: {
       analyticsService: noopAnalyticsService,
       auditService: noopAuditService,

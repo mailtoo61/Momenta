@@ -17,6 +17,7 @@ export {
   selectIsRuntimeReady,
   selectRuntimeEnvironment,
   selectRuntimeError,
+  selectRuntimePersistenceMode,
   selectRuntimeServices,
   selectRuntimeStatus,
   useCurrentLocale,
@@ -25,6 +26,7 @@ export {
   useIsRuntimeReady,
   useRuntimeEnvironment,
   useRuntimeError,
+  useRuntimePersistenceMode,
   useRuntimeServices,
   useRuntimeStatus,
   useServices

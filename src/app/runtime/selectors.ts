@@ -1,4 +1,4 @@
-import type { AppEnvironment, AppThemePreference } from "../../shared/config";
+import type { AppEnvironment, AppThemePreference, PersistenceMode } from "../../shared/config";
 import type { AppError } from "../../shared/errors";
 import type { FeatureFlags } from "../../shared/featureFlags";
 import type { ServiceContainer } from "../../services";
@@ -18,6 +18,10 @@ export function selectRuntimeEnvironment(state: AppRuntimeState): AppEnvironment
 
 export function selectRuntimeServices(state: AppRuntimeState): ServiceContainer | null {
   return state.status === "ready" ? state.bootstrap.services : null;
+}
+
+export function selectRuntimePersistenceMode(state: AppRuntimeState): PersistenceMode | null {
+  return state.status === "ready" ? state.bootstrap.persistenceMode : null;
 }
 
 export function selectFeatureFlags(state: AppRuntimeState): FeatureFlags | null {
@@ -50,6 +54,10 @@ export function useRuntimeEnvironment(): AppEnvironment | null {
 
 export function useRuntimeServices(): ServiceContainer | null {
   return selectRuntimeServices(useAppRuntime().state);
+}
+
+export function useRuntimePersistenceMode(): PersistenceMode | null {
+  return selectRuntimePersistenceMode(useAppRuntime().state);
 }
 
 export function useServices(): ServiceContainer | null {
