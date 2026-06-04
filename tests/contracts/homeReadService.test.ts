@@ -25,6 +25,7 @@ describe("home read service boundary", () => {
       expect(result.value.overdue.items).toEqual([]);
       expect(result.value.recent.items).toEqual([]);
       expect(result.value.upcoming.emptyDescriptionKey).toBe("home.upcomingEmpty");
+      expect(result.value.insight.emptyDescriptionKey).toBe("home.insightNoMoments");
     }
   });
 
@@ -58,11 +59,33 @@ describe("home read service boundary", () => {
     if (result.isSuccess) {
       expect(result.value.upcoming.items).toHaveLength(1);
       expect(result.value.overdue.items).toHaveLength(1);
-      expect(result.value.recent.items).toHaveLength(1);
+      expect(result.value.recent.items).toHaveLength(3);
       expect(result.value.upcoming.items[0]?.timeValue).toBe(7);
       expect(result.value.overdue.items[0]?.statusLabelKey).toBe(
         "momentPresentation.status.overdue"
       );
+      expect(result.value.insight.emptyDescriptionKey).toBe("home.insightOverdue");
+    }
+  });
+
+  it("uses hydration policy output without explicit moment state overrides", async () => {
+    const repositories = createInMemoryRepositories();
+    await repositories.momentRepository.create(
+      samplePersistedMoment("policy-overdue", "vehicle", {
+        lastActionAt: "2026-06-01T12:00:00.000Z"
+      })
+    );
+    const homeReadService = createHomeReadService({
+      momentRepository: repositories.momentRepository,
+      nowIso: () => "2026-06-04T12:00:00.000Z"
+    });
+
+    const result = await homeReadService.getHomeViewModel();
+
+    expect(result.isSuccess).toBe(true);
+    if (result.isSuccess) {
+      expect(result.value.overdue.items.map((item) => item.id)).toEqual(["policy-overdue"]);
+      expect(result.value.overdue.items[0]?.timeValue).toBe(3);
     }
   });
 
@@ -242,7 +265,8 @@ async function readImportLines(relativePath: string): Promise<string> {
 
 function samplePersistedMoment(
   id: string,
-  categoryRegistryId: PersistedMoment["categoryRegistryId"]
+  categoryRegistryId: PersistedMoment["categoryRegistryId"],
+  overrides: Partial<PersistedMoment> = {}
 ): PersistedMoment {
   return {
     archivedAt: null,
@@ -260,6 +284,7 @@ function samplePersistedMoment(
     privacyLevel: "private",
     title: "Service boundary moment",
     updatedAt: timestamp,
-    widgetEligible: true
+    widgetEligible: true,
+    ...overrides
   };
 }

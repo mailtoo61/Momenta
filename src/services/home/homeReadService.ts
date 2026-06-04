@@ -2,10 +2,10 @@ import type { MomentRepository } from "../../data/repositories";
 import { toDomainMoment } from "../../data/mappers";
 import type { HomeScreenViewModel } from "../../features/moments/viewModels";
 import {
-  buildHomeScreenViewModel,
-  type BuildHomeScreenViewModelInput,
-  type HomeMomentReadModelInput
-} from "../../features/home/homeViewModel";
+  buildHomeSectionsFromMoments,
+  type BuildHomeSectionsFromMomentsInput,
+  type HomeHydrationSignal
+} from "../../features/home/homeHydrationPolicy";
 import {
   createServiceError,
   serviceFailure,
@@ -14,14 +14,12 @@ import {
 } from "../serviceResult";
 
 export type GetHomeViewModelInput = Readonly<{
-  momentStates?: Readonly<Record<string, HomeMomentReadState>>;
+  momentStates?: Readonly<Record<string, HomeHydrationSignal>>;
+  nowIso?: string;
+  sectionLimits?: BuildHomeSectionsFromMomentsInput["sectionLimits"];
 }>;
 
-export type HomeMomentReadState = Readonly<{
-  status: "upcoming" | "overdue" | "recent";
-  elapsedDays?: number;
-  countdownDays?: number;
-}>;
+export type HomeMomentReadState = HomeHydrationSignal;
 
 export type GetHomeViewModelResult = ServiceResult<HomeScreenViewModel>;
 
@@ -31,20 +29,23 @@ export type HomeReadService = Readonly<{
 
 export type HomeReadServiceDependencies = Readonly<{
   momentRepository: MomentRepository;
-  buildHomeViewModel?: (input: BuildHomeScreenViewModelInput) => HomeScreenViewModel;
+  buildHomeViewModel?: (input: BuildHomeSectionsFromMomentsInput) => HomeScreenViewModel;
+  nowIso?: () => string;
 }>;
 
 export const noopHomeReadService: HomeReadService = {
   getHomeViewModel: async () =>
     serviceSuccess(
-      buildHomeScreenViewModel({
-        moments: []
+      buildHomeSectionsFromMoments({
+        moments: [],
+        nowIso: new Date().toISOString()
       })
     )
 };
 
 export function createHomeReadService(dependencies: HomeReadServiceDependencies): HomeReadService {
-  const buildHomeViewModel = dependencies.buildHomeViewModel ?? buildHomeScreenViewModel;
+  const buildHomeViewModel = dependencies.buildHomeViewModel ?? buildHomeSectionsFromMoments;
+  const nowIso = dependencies.nowIso ?? (() => new Date().toISOString());
 
   return {
     getHomeViewModel: async (input = {}) => {
@@ -60,22 +61,14 @@ export function createHomeReadService(dependencies: HomeReadServiceDependencies)
         );
       }
 
-      const moments = momentsResult.value.map<HomeMomentReadModelInput>((moment) => {
-        const readState = input.momentStates?.[moment.id] ?? {
-          status: "recent" as const
-        };
-
-        return {
-          countdownDays: readState.countdownDays,
-          elapsedDays: readState.elapsedDays,
-          moment: toDomainMoment(moment),
-          status: readState.status
-        };
-      });
+      const moments = momentsResult.value.map((moment) => toDomainMoment(moment));
 
       return serviceSuccess(
         buildHomeViewModel({
-          moments
+          momentSignals: input.momentStates,
+          moments,
+          nowIso: input.nowIso ?? nowIso(),
+          sectionLimits: input.sectionLimits
         })
       );
     }

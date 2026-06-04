@@ -13,6 +13,7 @@ import {
   mapMomentToRecentViewModel,
   mapMomentToUpcomingViewModel
 } from "../moments/viewModels";
+export { buildHomeSectionsFromMoments } from "./homeHydrationPolicy";
 
 export type HomeMomentReadModelInput = Readonly<{
   moment: Moment;
