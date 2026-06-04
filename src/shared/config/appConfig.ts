@@ -13,6 +13,9 @@ export type AppConfig = {
     appVersion: string;
     buildNumber: string;
   };
+  storage: {
+    sqliteDatabaseName: string;
+  };
 };
 
 export const appConfig: AppConfig = {
@@ -23,5 +26,8 @@ export const appConfig: AppConfig = {
   constants: {
     appVersion: "0.1.0",
     buildNumber: "0"
+  },
+  storage: {
+    sqliteDatabaseName: "momenta.db"
   }
 };

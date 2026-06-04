@@ -1,4 +1,10 @@
-import type { InMemoryRepositories } from "../data/repositories";
+import type {
+  AuditLogRepository,
+  MomentRepository,
+  PremiumEntitlementRepository,
+  SettingsRepository,
+  WidgetSnapshotRepository
+} from "../data/repositories";
 import type { AnalyticsProvider } from "../platform/analytics";
 import type { NotificationProvider } from "../platform/notifications";
 import type { WidgetProvider } from "../platform/widgets";
@@ -13,13 +19,21 @@ import { createReminderOrchestrationService, type ReminderOrchestrationService }
 import { createWidgetSnapshotService, type WidgetSnapshotService } from "./widgets";
 
 export type ServiceContainerDependencies = Readonly<{
-  repositories: InMemoryRepositories;
+  repositories: ServiceContainerRepositories;
   analyticsProvider?: AnalyticsProvider;
   notificationProvider?: NotificationProvider;
   widgetProvider?: WidgetProvider;
   logger?: ServiceContainerLogger;
   idFactory?: () => string;
   nowIso?: () => string;
+}>;
+
+export type ServiceContainerRepositories = Readonly<{
+  momentRepository: MomentRepository;
+  settingsRepository: SettingsRepository;
+  widgetSnapshotRepository: WidgetSnapshotRepository;
+  auditLogRepository: AuditLogRepository;
+  premiumEntitlementRepository: PremiumEntitlementRepository;
 }>;
 
 export type ServiceContainerLogger = Readonly<{

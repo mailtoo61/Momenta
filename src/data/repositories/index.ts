@@ -23,3 +23,4 @@ export {
   type WidgetSnapshotRepository
 } from "./repositoryContracts";
 export { createInMemoryRepositories, type InMemoryRepositories } from "./inMemory";
+export { createSqliteRepositories, type SqliteRepositories } from "./sqlite";

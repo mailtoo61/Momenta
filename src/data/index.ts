@@ -13,6 +13,21 @@ export {
   type PersistenceErrorCode
 } from "./persistenceErrors";
 export {
+  createMigrationRunner,
+  INITIAL_SCHEMA_MIGRATION_ID,
+  INITIAL_SCHEMA_SQL,
+  initialSchemaMigration,
+  MIGRATION_STATUSES,
+  type CreateMigrationRunnerOptions,
+  type ExtendedMigrationRunner,
+  type MigrationDefinition,
+  type MigrationId,
+  type MigrationMetadata,
+  type MigrationResult,
+  type MigrationRunner,
+  type MigrationStatus
+} from "./migrations";
+export {
   auditEventToPersistedLog,
   createInputToPersistedDraft,
   toDomainMoment,
