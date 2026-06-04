@@ -1,7 +1,7 @@
 import { dataFailure, dataSuccess, type DataResult } from "../../dataResult";
 import { createPersistenceError } from "../../persistenceErrors";
-import type { PersistenceError } from "../../persistenceErrors";
-import type { SqliteAdapter, SqliteParams, SqliteRow } from "../../sqlite";
+import type { SqliteAdapter, SqliteParams, SqliteRow } from "../../sqlite/sqliteAdapter";
+import { isPersistenceError, normalizeSqliteError } from "../../sqlite/sqliteErrors";
 import type {
   PersistedAppSetting,
   PersistedAuditLog,
@@ -583,11 +583,7 @@ function toRepositoryError(operation: string, cause: unknown) {
     return cause;
   }
 
-  return createPersistenceError({
-    code: "DATA_REPOSITORY_UNAVAILABLE",
-    developerMessage: `SQLite repository failed to ${operation}.`,
-    cause
-  });
+  return normalizeSqliteError("repository", cause, `SQLite repository failed to ${operation}.`);
 }
 
 function recordNotFound(id: PersistedId) {
@@ -595,10 +591,4 @@ function recordNotFound(id: PersistedId) {
     code: "DATA_RECORD_NOT_FOUND",
     developerMessage: `Record not found: ${id}`
   });
-}
-
-function isPersistenceError(value: unknown): value is PersistenceError {
-  return Boolean(
-    value && typeof value === "object" && "code" in value && "developerMessage" in value
-  );
 }

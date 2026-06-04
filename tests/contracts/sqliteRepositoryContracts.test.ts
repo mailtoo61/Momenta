@@ -9,14 +9,25 @@ import {
   type MigrationDefinition
 } from "../../src/data/migrations";
 import {
+  createInMemoryRepositories,
   createSqliteRepositories,
+  resolveRepositories,
   type PersistedMoment,
   type PersistedPremiumEntitlement,
   type PersistedWidgetSnapshot
 } from "../../src/data/repositories";
-import { createPersistenceError, dataFailure, dataSuccess } from "../../src/data";
+import {
+  bootstrapPersistence,
+  createPersistenceError,
+  dataFailure,
+  dataSuccess,
+  resolvePersistenceMode
+} from "../../src/data";
+import { openMomentaDatabase } from "../../src/data/sqlite/database";
+import { normalizeSqliteError } from "../../src/data/sqlite/sqliteErrors";
 import type {
   SqliteAdapter,
+  SqliteExecuteResult,
   SqliteParams,
   SqlitePrimitive,
   SqliteRow
@@ -27,6 +38,71 @@ const timestamp = "2026-06-04T00:00:00.000Z";
 const laterTimestamp = "2026-06-04T01:00:00.000Z";
 
 describe("SQLite repository implementations and migrations", () => {
+  it("resolves persistence mode from environment-aware config", () => {
+    expect(resolvePersistenceMode({ environment: "development" })).toBe("sqlite");
+    expect(resolvePersistenceMode({ environment: "preview" })).toBe("inMemory");
+    expect(resolvePersistenceMode({ environment: "production" })).toBe("inMemory");
+    expect(resolvePersistenceMode({ environment: "production", override: "sqlite" })).toBe(
+      "sqlite"
+    );
+  });
+
+  it("resolves repositories centrally for in-memory and SQLite modes", async () => {
+    const inMemoryResult = await resolveRepositories({ mode: "inMemory" });
+    expect(inMemoryResult.isSuccess && inMemoryResult.value.mode).toBe("inMemory");
+
+    const sqliteResult = await resolveRepositories({
+      mode: "sqlite",
+      sqliteDatabase: {
+        adapter: new FakeSqliteAdapter(),
+        close: async () => undefined
+      }
+    });
+
+    expect(sqliteResult.isSuccess && sqliteResult.value.mode).toBe("sqlite");
+    if (sqliteResult.isSuccess) {
+      expect(sqliteResult.value.repositories.momentRepository).toBeDefined();
+    }
+  });
+
+  it("bootstraps persistence without forcing SQLite when mode is in-memory", async () => {
+    const result = await bootstrapPersistence({
+      environment: "production"
+    });
+
+    expect(result.isSuccess && result.value.mode).toBe("inMemory");
+  });
+
+  it("fails safely when SQLite mode has no bootstrap or adapter opening fails", async () => {
+    const missingBootstrap = await resolveRepositories({ mode: "sqlite" });
+    expect(missingBootstrap.isSuccess).toBe(false);
+
+    const openFailure = await openMomentaDatabase({
+      openAdapter: async () => {
+        throw new Error("open failed");
+      }
+    });
+
+    expect(openFailure).toMatchObject({
+      isSuccess: false,
+      error: { code: "DATA_REPOSITORY_UNAVAILABLE" }
+    });
+  });
+
+  it("closes the adapter and returns failure when bootstrap migration fails", async () => {
+    const adapter = new FakeSqliteAdapter({
+      failExecuteIncludes: "CREATE TABLE IF NOT EXISTS moments"
+    });
+
+    const result = await openMomentaDatabase({
+      openAdapter: async () => adapter,
+      nowIso: () => timestamp
+    });
+
+    expect(result.isSuccess).toBe(false);
+    expect(adapter.closeCount).toBe(1);
+  });
+
   it("returns all SQLite repository implementations from the factory", () => {
     const repositories = createSqliteRepositories(new FakeSqliteAdapter());
 
@@ -158,6 +234,113 @@ describe("SQLite repository implementations and migrations", () => {
     });
   });
 
+  it("keeps repository behavior aligned between in-memory and SQLite implementations", async () => {
+    const inMemoryRepositories = createInMemoryRepositories();
+    const sqliteRepositories = createSqliteRepositories(new FakeSqliteAdapter());
+    const moment = samplePersistedMoment("moment-1");
+    const setting = {
+      id: "language",
+      settingKey: "language",
+      settingValue: JSON.stringify("tr"),
+      updatedAt: timestamp
+    };
+    const snapshot: PersistedWidgetSnapshot = {
+      id: "snapshot-1",
+      widgetId: "home-small",
+      snapshotVersion: "v1",
+      generatedAt: timestamp,
+      payload: { payloadVersion: "v1" },
+      privacyLevel: "private",
+      privacyMode: "standard",
+      expiresAt: null
+    };
+    const entitlement: PersistedPremiumEntitlement = {
+      id: "entitlement-1",
+      planId: "free",
+      status: "free",
+      activatedAt: null,
+      expiresAt: null,
+      lastValidatedAt: timestamp,
+      source: "local"
+    };
+
+    for (const repositories of [inMemoryRepositories, sqliteRepositories]) {
+      await expect(repositories.momentRepository.create(moment)).resolves.toMatchObject({
+        isSuccess: true
+      });
+      await expect(
+        repositories.momentRepository.search({ query: "vehicle" })
+      ).resolves.toMatchObject({
+        isSuccess: true,
+        value: [{ id: "moment-1" }]
+      });
+      await expect(
+        repositories.momentRepository.archive(moment.id, laterTimestamp)
+      ).resolves.toMatchObject({
+        isSuccess: true,
+        value: { isArchived: true }
+      });
+      await expect(
+        repositories.momentRepository.restore(moment.id, laterTimestamp)
+      ).resolves.toMatchObject({
+        isSuccess: true,
+        value: { isArchived: false, isDeleted: false }
+      });
+      await expect(
+        repositories.momentRepository.softDelete(moment.id, laterTimestamp)
+      ).resolves.toMatchObject({
+        isSuccess: true,
+        value: { isDeleted: true }
+      });
+      await expect(repositories.settingsRepository.set(setting)).resolves.toMatchObject({
+        isSuccess: true
+      });
+      await expect(repositories.settingsRepository.list()).resolves.toMatchObject({
+        isSuccess: true,
+        value: [{ settingKey: "language" }]
+      });
+      await expect(repositories.widgetSnapshotRepository.save(snapshot)).resolves.toMatchObject({
+        isSuccess: true
+      });
+      await expect(repositories.widgetSnapshotRepository.list()).resolves.toMatchObject({
+        isSuccess: true,
+        value: [{ id: "snapshot-1" }]
+      });
+      await expect(
+        repositories.widgetSnapshotRepository.remove(snapshot.id)
+      ).resolves.toMatchObject({
+        isSuccess: true
+      });
+      await expect(
+        repositories.auditLogRepository.append({
+          id: "audit-1",
+          eventType: "moment_created",
+          entityType: "moment",
+          entityId: moment.id,
+          timestamp,
+          severity: "info",
+          details: { momentId: moment.id }
+        })
+      ).resolves.toMatchObject({ isSuccess: true });
+      await expect(repositories.auditLogRepository.listRecent(1)).resolves.toMatchObject({
+        isSuccess: true,
+        value: [{ id: "audit-1" }]
+      });
+      await expect(
+        repositories.premiumEntitlementRepository.save(entitlement)
+      ).resolves.toMatchObject({
+        isSuccess: true
+      });
+      await expect(repositories.premiumEntitlementRepository.getCurrent()).resolves.toMatchObject({
+        isSuccess: true,
+        value: { id: "entitlement-1" }
+      });
+      await expect(repositories.premiumEntitlementRepository.clear()).resolves.toMatchObject({
+        isSuccess: true
+      });
+    }
+  });
+
   it("wires SQLite repositories into the service container through repository contracts", () => {
     const repositories = createSqliteRepositories(new FakeSqliteAdapter());
     const container = createServiceContainer({
@@ -201,6 +384,11 @@ describe("SQLite repository implementations and migrations", () => {
       completedAt: timestamp,
       errorMessage: null
     });
+
+    const failedResult = await runner.metadataReader.listFailed();
+    expect(failedResult.isSuccess && failedResult.value).toEqual([]);
+    const latestResult = await runner.metadataReader.getLatestStatus();
+    expect(latestResult.isSuccess && latestResult.value?.migrationId).toBe("0002_second");
   });
 
   it("returns DataResult failure when a migration fails", async () => {
@@ -217,6 +405,58 @@ describe("SQLite repository implementations and migrations", () => {
     expect(adapter.migrationMetadata[0]).toMatchObject({
       migrationId: "0001_failure",
       status: "failed"
+    });
+  });
+
+  it("detects previous failed migrations and stops pending migration execution", async () => {
+    const adapter = new FakeSqliteAdapter();
+    adapter.migrationMetadata.push({
+      id: "0001_failed",
+      migrationId: "0001_failed",
+      status: "failed",
+      startedAt: timestamp,
+      completedAt: timestamp,
+      errorMessage: "failed"
+    });
+    const runner = createMigrationRunner({
+      adapter,
+      migrations: [successfulMigration("0002_next", [])],
+      nowIso: () => timestamp
+    });
+
+    await expect(runner.listPending()).resolves.toMatchObject({
+      isSuccess: false,
+      error: { code: "DATA_MIGRATION_FAILED" }
+    });
+    await expect(runner.runPending()).resolves.toMatchObject({
+      isSuccess: false,
+      error: { code: "DATA_MIGRATION_FAILED" }
+    });
+    await expect(runner.metadataReader.listFailed()).resolves.toMatchObject({
+      isSuccess: true,
+      value: [{ migrationId: "0001_failed" }]
+    });
+  });
+
+  it("normalizes database query and transaction failures safely", async () => {
+    const queryFailureRepositories = createSqliteRepositories(
+      new FakeSqliteAdapter({ failQuery: true })
+    );
+    await expect(
+      queryFailureRepositories.momentRepository.getById("missing")
+    ).resolves.toMatchObject({
+      isSuccess: false,
+      error: { code: "DATA_REPOSITORY_UNAVAILABLE" }
+    });
+
+    const normalized = normalizeSqliteError(
+      "transaction",
+      new Error("locked"),
+      "Transaction failed"
+    );
+    expect(normalized).toMatchObject({
+      code: "DATA_REPOSITORY_UNAVAILABLE",
+      developerMessage: "Transaction failed"
     });
   });
 
@@ -255,11 +495,29 @@ describe("SQLite repository implementations and migrations", () => {
         expect(importLines).not.toContain("/services");
         expect(importLines).not.toContain("expo-sqlite");
       }
+
+      if (
+        relativePath === "src/data/persistenceBootstrap.ts" ||
+        relativePath === "src/data/repositories/repositoryResolver.ts"
+      ) {
+        const importLines = source
+          .split("\n")
+          .filter((line) => line.trimStart().startsWith("import"))
+          .join("\n");
+
+        expect(importLines).not.toContain("/app");
+        expect(importLines).not.toContain("/features");
+      }
     }
 
     expect(expoSqliteImporters).toEqual(["src/data/sqlite/sqliteAdapter.ts"]);
   });
 });
+
+type FakeSqliteAdapterOptions = Readonly<{
+  failExecuteIncludes?: string;
+  failQuery?: boolean;
+}>;
 
 class FakeSqliteAdapter implements SqliteAdapter {
   readonly moments = new Map<string, SqliteRow>();
@@ -269,9 +527,16 @@ class FakeSqliteAdapter implements SqliteAdapter {
   readonly premiumEntitlements: SqliteRow[] = [];
   readonly migrationMetadata: SqliteRow[] = [];
   readonly executedSql: string[] = [];
+  closeCount = 0;
 
-  async execute(sql: string, params: SqliteParams = []) {
+  constructor(private readonly options: FakeSqliteAdapterOptions = {}) {}
+
+  async execute(sql: string, params: SqliteParams = []): Promise<SqliteExecuteResult> {
     this.executedSql.push(sql);
+    if (this.options.failExecuteIncludes && sql.includes(this.options.failExecuteIncludes)) {
+      throw new Error("Expected fake execute failure.");
+    }
+
     const normalizedSql = normalizeSql(sql);
 
     if (normalizedSql.startsWith("insert into moments")) {
@@ -306,6 +571,10 @@ class FakeSqliteAdapter implements SqliteAdapter {
   }
 
   async query<TRow extends SqliteRow>(sql: string, params: SqliteParams = []) {
+    if (this.options.failQuery) {
+      throw new Error("Expected fake query failure.");
+    }
+
     const normalizedSql = normalizeSql(sql);
 
     if (normalizedSql.includes("from moments")) {
@@ -355,6 +624,7 @@ class FakeSqliteAdapter implements SqliteAdapter {
   }
 
   async close() {
+    this.closeCount += 1;
     return undefined;
   }
 

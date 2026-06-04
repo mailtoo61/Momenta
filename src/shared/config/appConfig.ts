@@ -3,6 +3,7 @@ export const SUPPORTED_ENVIRONMENTS = ["development", "preview", "production"] a
 export type AppEnvironment = (typeof SUPPORTED_ENVIRONMENTS)[number];
 
 export type AppThemePreference = "light" | "dark" | "system";
+export type PersistenceMode = "inMemory" | "sqlite";
 
 export type AppConfig = {
   appName: "Momenta";
@@ -15,6 +16,7 @@ export type AppConfig = {
   };
   storage: {
     sqliteDatabaseName: string;
+    persistenceModeByEnvironment: Record<AppEnvironment, PersistenceMode>;
   };
 };
 
@@ -28,6 +30,11 @@ export const appConfig: AppConfig = {
     buildNumber: "0"
   },
   storage: {
-    sqliteDatabaseName: "momenta.db"
+    sqliteDatabaseName: "momenta.db",
+    persistenceModeByEnvironment: {
+      development: "sqlite",
+      preview: "inMemory",
+      production: "inMemory"
+    }
   }
 };

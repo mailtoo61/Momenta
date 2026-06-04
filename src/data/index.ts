@@ -12,6 +12,8 @@ export {
   type PersistenceError,
   type PersistenceErrorCode
 } from "./persistenceErrors";
+export { resolvePersistenceMode, type PersistenceMode } from "./persistenceMode";
+export { bootstrapPersistence, type PersistenceBootstrapInput } from "./persistenceBootstrap";
 export {
   createMigrationRunner,
   INITIAL_SCHEMA_MIGRATION_ID,

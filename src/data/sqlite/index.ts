@@ -1,6 +1,11 @@
 export { openMomentaDatabase, type MomentaDatabase } from "./database";
 export { sqliteDatabaseConfig } from "./databaseConfig";
 export {
+  isPersistenceError,
+  normalizeSqliteError,
+  type SqliteErrorOperation
+} from "./sqliteErrors";
+export {
   openSqliteAdapter,
   type OpenSqliteAdapterOptions,
   type SqliteAdapter,

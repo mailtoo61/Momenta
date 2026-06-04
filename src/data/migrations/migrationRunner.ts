@@ -14,7 +14,14 @@ export type MigrationMetadata = Readonly<{
 
 export type ExtendedMigrationRunner = MigrationRunner & {
   runPending: () => Promise<DataResult<ReadonlyArray<MigrationResult>>>;
+  metadataReader: MigrationMetadataReader;
 };
+
+export type MigrationMetadataReader = Readonly<{
+  listApplied: () => Promise<DataResult<ReadonlyArray<MigrationMetadata>>>;
+  listFailed: () => Promise<DataResult<ReadonlyArray<MigrationMetadata>>>;
+  getLatestStatus: () => Promise<DataResult<MigrationMetadata | null>>;
+}>;
 
 export type CreateMigrationRunnerOptions = Readonly<{
   adapter: SqliteAdapter;
@@ -38,10 +45,12 @@ export function createMigrationRunner(
   const sortedMigrations = [...options.migrations].sort((left, right) =>
     left.id.localeCompare(right.id)
   );
+  const metadataReader = createMigrationMetadataReader(options.adapter);
 
   return {
+    metadataReader,
     listPending: async () => {
-      const metadataResult = await listMigrationMetadata(options.adapter);
+      const metadataResult = await listRecoverableMigrationMetadata(options.adapter);
       if (!metadataResult.isSuccess) {
         return dataFailure(metadataResult.error);
       }
@@ -77,11 +86,33 @@ export function createMigrationRunner(
   };
 }
 
+export function createMigrationMetadataReader(adapter: SqliteAdapter): MigrationMetadataReader {
+  return {
+    listApplied: async () => listMigrationMetadata(adapter),
+    listFailed: async () => {
+      const metadataResult = await listMigrationMetadata(adapter);
+      if (!metadataResult.isSuccess) {
+        return dataFailure(metadataResult.error);
+      }
+
+      return dataSuccess(metadataResult.value.filter((metadata) => metadata.status === "failed"));
+    },
+    getLatestStatus: async () => {
+      const metadataResult = await listMigrationMetadata(adapter);
+      if (!metadataResult.isSuccess) {
+        return dataFailure(metadataResult.error);
+      }
+
+      return dataSuccess(metadataResult.value.at(-1) ?? null);
+    }
+  };
+}
+
 async function listPendingMigrations(
   adapter: SqliteAdapter,
   sortedMigrations: ReadonlyArray<MigrationDefinition>
 ): Promise<DataResult<ReadonlyArray<MigrationDefinition>>> {
-  const metadataResult = await listMigrationMetadata(adapter);
+  const metadataResult = await listRecoverableMigrationMetadata(adapter);
   if (!metadataResult.isSuccess) {
     return dataFailure(metadataResult.error);
   }
@@ -93,6 +124,27 @@ async function listPendingMigrations(
   );
 
   return dataSuccess(sortedMigrations.filter((migration) => !completedIds.has(migration.id)));
+}
+
+async function listRecoverableMigrationMetadata(
+  adapter: SqliteAdapter
+): Promise<DataResult<ReadonlyArray<MigrationMetadata>>> {
+  const metadataResult = await listMigrationMetadata(adapter);
+  if (!metadataResult.isSuccess) {
+    return dataFailure(metadataResult.error);
+  }
+
+  const failedMigration = metadataResult.value.find((metadata) => metadata.status === "failed");
+  if (failedMigration) {
+    return dataFailure(
+      createPersistenceError({
+        code: "DATA_MIGRATION_FAILED",
+        developerMessage: `Previous migration failed: ${failedMigration.migrationId}`
+      })
+    );
+  }
+
+  return dataSuccess(metadataResult.value);
 }
 
 async function runMigration(
@@ -138,6 +190,19 @@ async function runMigration(
     await upsertMigrationMetadata(adapter, toMetadata(completedResult));
     return dataSuccess(completedResult);
   } catch (cause) {
+    const completedAt = nowIso();
+    try {
+      await upsertMigrationMetadata(adapter, {
+        id: migration.id,
+        migrationId: migration.id,
+        status: "failed",
+        startedAt,
+        completedAt,
+        errorMessage: `Migration failed: ${migration.id}`
+      });
+    } catch {
+      // Preserve the original migration failure as the boundary result.
+    }
     return dataFailure(
       createPersistenceError({
         code: "DATA_MIGRATION_FAILED",

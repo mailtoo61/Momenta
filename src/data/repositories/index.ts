@@ -22,5 +22,11 @@ export {
   type SettingsRepository,
   type WidgetSnapshotRepository
 } from "./repositoryContracts";
+export {
+  resolveRepositories,
+  type RepositorySet,
+  type ResolveRepositoriesInput,
+  type ResolvedRepositories
+} from "./repositoryResolver";
 export { createInMemoryRepositories, type InMemoryRepositories } from "./inMemory";
 export { createSqliteRepositories, type SqliteRepositories } from "./sqlite";

@@ -4,10 +4,12 @@ export {
   initialSchemaMigration
 } from "./initialSchemaMigration";
 export {
+  createMigrationMetadataReader,
   createMigrationRunner,
   type CreateMigrationRunnerOptions,
   type ExtendedMigrationRunner,
-  type MigrationMetadata
+  type MigrationMetadata,
+  type MigrationMetadataReader
 } from "./migrationRunner";
 export {
   MIGRATION_STATUSES,
