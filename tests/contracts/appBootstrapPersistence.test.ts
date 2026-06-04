@@ -26,6 +26,7 @@ describe("app bootstrap persistence integration", () => {
 
     expect(result.persistenceMode).toBe("inMemory");
     expect(result.environment).toBe("production");
+    expect(result.services.homeReadService).toBeDefined();
     expect(result.services.momentWorkflowService).toBeDefined();
     expect(result.bootstrappedAt).toBe(timestamp);
   });

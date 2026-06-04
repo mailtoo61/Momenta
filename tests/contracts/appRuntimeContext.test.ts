@@ -23,6 +23,7 @@ import { defaultFeatureFlags } from "../../src/shared/featureFlags";
 import type { ServiceContainer } from "../../src/services";
 import { noopAnalyticsService } from "../../src/services/analytics";
 import { noopAuditService } from "../../src/services/audit";
+import { noopHomeReadService } from "../../src/services/home";
 import { noopMomentWorkflowService } from "../../src/services/moments";
 import { noopReminderOrchestrationService } from "../../src/services/reminders";
 import { noopWidgetSnapshotService } from "../../src/services/widgets";
@@ -118,6 +119,7 @@ describe("app runtime context", () => {
       [
         "analyticsService",
         "auditService",
+        "homeReadService",
         "momentWorkflowService",
         "reminderOrchestrationService",
         "widgetSnapshotService"
@@ -200,6 +202,7 @@ function createTestServiceContainer(): ServiceContainer {
   return {
     analyticsService: noopAnalyticsService,
     auditService: noopAuditService,
+    homeReadService: noopHomeReadService,
     momentWorkflowService: noopMomentWorkflowService,
     reminderOrchestrationService: noopReminderOrchestrationService,
     widgetSnapshotService: noopWidgetSnapshotService

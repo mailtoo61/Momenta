@@ -31,6 +31,7 @@ import {
 } from "../../src/shared/ui";
 import { noopAnalyticsService } from "../../src/services/analytics";
 import { noopAuditService } from "../../src/services/audit";
+import { noopHomeReadService } from "../../src/services/home";
 import { noopMomentWorkflowService } from "../../src/services/moments";
 import { noopReminderOrchestrationService } from "../../src/services/reminders";
 import { noopWidgetSnapshotService } from "../../src/services/widgets";
@@ -208,6 +209,7 @@ function readyBootstrapContext(): AppRuntimeBootstrapContext {
     services: {
       analyticsService: noopAnalyticsService,
       auditService: noopAuditService,
+      homeReadService: noopHomeReadService,
       momentWorkflowService: noopMomentWorkflowService,
       reminderOrchestrationService: noopReminderOrchestrationService,
       widgetSnapshotService: noopWidgetSnapshotService

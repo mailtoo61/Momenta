@@ -14,6 +14,7 @@ import { noopWidgetProvider } from "../platform/widgets";
 import type { LogContext, LogLevel } from "../shared/logger";
 import { createAnalyticsService, type AnalyticsService } from "./analytics";
 import { createAuditService, type AuditService } from "./audit";
+import { createHomeReadService, type HomeReadService } from "./home";
 import { createMomentWorkflowService, type MomentWorkflowService } from "./moments";
 import { createReminderOrchestrationService, type ReminderOrchestrationService } from "./reminders";
 import { createWidgetSnapshotService, type WidgetSnapshotService } from "./widgets";
@@ -43,6 +44,7 @@ export type ServiceContainerLogger = Readonly<{
 export type ServiceContainer = Readonly<{
   auditService: AuditService;
   analyticsService: AnalyticsService;
+  homeReadService: HomeReadService;
   momentWorkflowService: MomentWorkflowService;
   reminderOrchestrationService: ReminderOrchestrationService;
   widgetSnapshotService: WidgetSnapshotService;
@@ -70,6 +72,9 @@ export function createServiceContainer(
   const analyticsService = createAnalyticsService({
     analyticsProvider: dependencies.analyticsProvider ?? noopAnalyticsProvider,
     logger
+  });
+  const homeReadService = createHomeReadService({
+    momentRepository: dependencies.repositories.momentRepository
   });
   const widgetSnapshotService = createWidgetSnapshotService({
     momentRepository: dependencies.repositories.momentRepository,
@@ -101,6 +106,7 @@ export function createServiceContainer(
   return {
     auditService,
     analyticsService,
+    homeReadService,
     momentWorkflowService,
     reminderOrchestrationService,
     widgetSnapshotService

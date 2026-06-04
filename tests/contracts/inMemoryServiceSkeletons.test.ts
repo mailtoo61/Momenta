@@ -284,6 +284,7 @@ describe("in-memory repositories and service skeletons", () => {
 
     expect(container.auditService).toBeDefined();
     expect(container.analyticsService).toBeDefined();
+    expect(container.homeReadService).toBeDefined();
     expect(container.momentWorkflowService).toBeDefined();
     expect(container.reminderOrchestrationService).toBeDefined();
     expect(container.widgetSnapshotService).toBeDefined();

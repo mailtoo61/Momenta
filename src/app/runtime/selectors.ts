@@ -2,6 +2,7 @@ import type { AppEnvironment, AppThemePreference, PersistenceMode } from "../../
 import type { AppError } from "../../shared/errors";
 import type { FeatureFlags } from "../../shared/featureFlags";
 import type { ServiceContainer } from "../../services";
+import type { HomeReadService } from "../../services/home";
 import { useAppRuntime, type AppRuntimeState, type AppRuntimeStatus } from "./runtimeContext";
 
 export function selectRuntimeStatus(state: AppRuntimeState): AppRuntimeStatus {
@@ -18,6 +19,10 @@ export function selectRuntimeEnvironment(state: AppRuntimeState): AppEnvironment
 
 export function selectRuntimeServices(state: AppRuntimeState): ServiceContainer | null {
   return state.status === "ready" ? state.bootstrap.services : null;
+}
+
+export function selectHomeReadService(state: AppRuntimeState): HomeReadService | null {
+  return state.status === "ready" ? state.bootstrap.services.homeReadService : null;
 }
 
 export function selectRuntimePersistenceMode(state: AppRuntimeState): PersistenceMode | null {
@@ -54,6 +59,10 @@ export function useRuntimeEnvironment(): AppEnvironment | null {
 
 export function useRuntimeServices(): ServiceContainer | null {
   return selectRuntimeServices(useAppRuntime().state);
+}
+
+export function useHomeReadService(): HomeReadService | null {
+  return selectHomeReadService(useAppRuntime().state);
 }
 
 export function useRuntimePersistenceMode(): PersistenceMode | null {
