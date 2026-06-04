@@ -1,0 +1,1 @@
+export const MOMENT_TITLE_MAX_LENGTH = 120;

@@ -1,0 +1,283 @@
+export const resources = {
+  tr: {
+    common: {
+      appName: "Momenta",
+      ok: "Tamam",
+      cancel: "Vazgec",
+      loading: "Yukleniyor"
+    },
+    home: {
+      title: "Ana sayfa",
+      subtitle: "Momenta hazirlanıyor."
+    },
+    onboarding: {
+      title: "Momenta'ya hos geldin",
+      subtitle: "Baslangic deneyimi daha sonra eklenecek."
+    },
+    settings: {
+      title: "Ayarlar",
+      subtitle: "Ayarlar altyapisi hazir."
+    },
+    paywall: {
+      title: "Premium",
+      subtitle: "Premium deneyimi daha sonra eklenecek."
+    },
+    debug: {
+      title: "Debug",
+      subtitle: "Gelistirme araclari hazir."
+    },
+    categories: {
+      "family.label": "Aile",
+      "family.description": "Aileyle ilgili onemli anlar.",
+      "health.label": "Saglik",
+      "health.description": "Saglik ve randevu hatirlaticilari.",
+      "vehicle.label": "Arac",
+      "vehicle.description": "Arac bakimi ve resmi islemler.",
+      "self.label": "Kendim",
+      "self.description": "Kisisel hedefler ve hatirlatmalar.",
+      "home.label": "Ev",
+      "home.description": "Evle ilgili onemli isler.",
+      "finance.label": "Finans",
+      "finance.description": "Odeme ve yenileme hatirlatmalari.",
+      "pet.label": "Evcil dost",
+      "pet.description": "Evcil dostlar icin onemli tarihler.",
+      "custom.label": "Ozel",
+      "custom.description": "Kendi belirledigin anlar."
+    },
+    presets: {
+      "vehicleInspection.title": "Arac muayenesi",
+      "vehicleInspection.description": "Bir sonraki muayene tarihini hatirla.",
+      "vehicleMaintenance.title": "Arac bakimi",
+      "vehicleMaintenance.description": "Bakim zamanini kacirma.",
+      "doctorAppointment.title": "Doktor randevusu",
+      "doctorAppointment.description": "Saglik randevunu takip et.",
+      "dentistCheck.title": "Dis kontrolu",
+      "dentistCheck.description": "Dis kontrolu zamanini hatirla.",
+      "callMother.title": "Anneyi ara",
+      "callMother.description": "Ailenle bagini sicak tut.",
+      "exercise.title": "Egzersiz",
+      "exercise.description": "Kendine ayirdigin zamani hatirla.",
+      "petVaccination.title": "Evcil dost asisi",
+      "petVaccination.description": "Asi tarihlerini takip et.",
+      "insuranceRenewal.title": "Sigorta yenileme",
+      "insuranceRenewal.description": "Yenileme tarihini onceden hatirla."
+    },
+    reminders: {
+      "today.label": "Bugun",
+      "today.description": "Ayni gun hatirlatir.",
+      "tomorrow.label": "Yarin",
+      "tomorrow.description": "Bir gun once hatirlatir.",
+      "oneWeekBefore.label": "Bir hafta once",
+      "oneWeekBefore.description": "Yedi gun once hatirlatir.",
+      "oneMonthBefore.label": "Bir ay once",
+      "oneMonthBefore.description": "Otuz gun once hatirlatir.",
+      "overdue.label": "Gecikti",
+      "overdue.description": "Tarih gectiginde isaretler.",
+      "longTimeNoAction.label": "Uzun suredir yok",
+      "longTimeNoAction.description": "Uzun sure hareket olmadiginda hatirlatir."
+    },
+    notifications: {
+      "today.title": "Bugun onemli bir an var",
+      "today.body": "Momenta'da kontrol edebilirsin.",
+      "tomorrow.title": "Yarin icin hatirlatma",
+      "tomorrow.body": "Onemli ani hazir tut.",
+      "oneWeekBefore.title": "Bir hafta kaldi",
+      "oneWeekBefore.body": "Yaklasan ani gozden gecir.",
+      "oneMonthBefore.title": "Bir ay kaldi",
+      "oneMonthBefore.body": "Planlamak icin iyi bir zaman.",
+      "overdue.title": "Bir an gecikti",
+      "overdue.body": "Momenta'da guvenle kontrol et.",
+      "longTimeNoAction.title": "Uzun suredir bakilmadi",
+      "longTimeNoAction.body": "Onemli anlarini gozden gecirebilirsin."
+    },
+    insights: {
+      "upcomingMoment.label": "Yaklasan an",
+      "upcomingMoment.description": "Yaklasan onemli tarihleri gosterir.",
+      "overdueMoment.label": "Geciken an",
+      "overdueMoment.description": "Gecmis tarihleri nazikce hatirlatir.",
+      "quietCategory.label": "Sessiz kategori",
+      "quietCategory.description": "Uzun suredir eklenmeyen alanlari fark eder.",
+      "longTimeNoAction.label": "Uzun ara",
+      "longTimeNoAction.description": "Bag kurmak icin uygun ani onerir.",
+      "weeklyRhythm.label": "Haftalik ritim",
+      "weeklyRhythm.description": "Haftanin genel temposunu ozetler."
+    },
+    monetization: {
+      "free.label": "Ucretsiz",
+      "free.description": "Baslamak icin sade plan.",
+      "weekly.label": "Haftalik",
+      "weekly.description": "Premium ozellikleri haftalik ac.",
+      "monthly.label": "Aylik",
+      "monthly.description": "Premium deneyimi aylik kullan.",
+      "lifetime.label": "Omur boyu",
+      "lifetime.description": "Momenta'yi kalici olarak ac."
+    },
+    settingsSections: {
+      "appearance.label": "Gorunum",
+      "appearance.description": "Tema tercihlerini yonet.",
+      "language.label": "Dil",
+      "language.description": "Uygulama dilini sec.",
+      "notifications.label": "Bildirimler",
+      "notifications.description": "Hatirlatma tercihlerini yonet.",
+      "widgets.label": "Widgetlar",
+      "widgets.description": "Widget deneyimini ayarla.",
+      "privacy.label": "Gizlilik",
+      "privacy.description": "Gizlilik tercihlerini yonet.",
+      "data.label": "Veri",
+      "data.description": "Iceri aktarma ve disa aktarma ayarlari.",
+      "premium.label": "Premium",
+      "premium.description": "Premium durumunu gor.",
+      "about.label": "Hakkinda",
+      "about.description": "Uygulama bilgilerini gor."
+    },
+    errors: {
+      unknown: "Bir seyler ters gitti.",
+      config: "Uygulama ayarlari yuklenemedi.",
+      localization: "Dil ayarlari yuklenemedi.",
+      featureDisabled: "Bu ozellik su anda kullanilamiyor.",
+      storageUnavailable: "Yerel depolama kullanilamiyor."
+    }
+  },
+  en: {
+    common: {
+      appName: "Momenta",
+      ok: "OK",
+      cancel: "Cancel",
+      loading: "Loading"
+    },
+    home: {
+      title: "Home",
+      subtitle: "Momenta is getting ready."
+    },
+    onboarding: {
+      title: "Welcome to Momenta",
+      subtitle: "The onboarding experience will be added later."
+    },
+    settings: {
+      title: "Settings",
+      subtitle: "Settings infrastructure is ready."
+    },
+    paywall: {
+      title: "Premium",
+      subtitle: "The premium experience will be added later."
+    },
+    debug: {
+      title: "Debug",
+      subtitle: "Development tools are ready."
+    },
+    categories: {
+      "family.label": "Family",
+      "family.description": "Important moments with family.",
+      "health.label": "Health",
+      "health.description": "Health and appointment reminders.",
+      "vehicle.label": "Vehicle",
+      "vehicle.description": "Vehicle care and official dates.",
+      "self.label": "Self",
+      "self.description": "Personal goals and reminders.",
+      "home.label": "Home",
+      "home.description": "Important things around home.",
+      "finance.label": "Finance",
+      "finance.description": "Payment and renewal reminders.",
+      "pet.label": "Pet",
+      "pet.description": "Important dates for pets.",
+      "custom.label": "Custom",
+      "custom.description": "Moments you define yourself."
+    },
+    presets: {
+      "vehicleInspection.title": "Vehicle inspection",
+      "vehicleInspection.description": "Remember the next inspection date.",
+      "vehicleMaintenance.title": "Vehicle maintenance",
+      "vehicleMaintenance.description": "Do not miss maintenance time.",
+      "doctorAppointment.title": "Doctor appointment",
+      "doctorAppointment.description": "Track an upcoming health visit.",
+      "dentistCheck.title": "Dentist check",
+      "dentistCheck.description": "Remember dental checkups.",
+      "callMother.title": "Call mother",
+      "callMother.description": "Keep family connection warm.",
+      "exercise.title": "Exercise",
+      "exercise.description": "Remember time set aside for yourself.",
+      "petVaccination.title": "Pet vaccination",
+      "petVaccination.description": "Track vaccination dates.",
+      "insuranceRenewal.title": "Insurance renewal",
+      "insuranceRenewal.description": "Remember renewal dates early."
+    },
+    reminders: {
+      "today.label": "Today",
+      "today.description": "Reminds on the same day.",
+      "tomorrow.label": "Tomorrow",
+      "tomorrow.description": "Reminds one day before.",
+      "oneWeekBefore.label": "One week before",
+      "oneWeekBefore.description": "Reminds seven days before.",
+      "oneMonthBefore.label": "One month before",
+      "oneMonthBefore.description": "Reminds thirty days before.",
+      "overdue.label": "Overdue",
+      "overdue.description": "Marks dates that have passed.",
+      "longTimeNoAction.label": "Long time no action",
+      "longTimeNoAction.description": "Reminds after a long quiet period."
+    },
+    notifications: {
+      "today.title": "An important moment is today",
+      "today.body": "You can check it in Momenta.",
+      "tomorrow.title": "Reminder for tomorrow",
+      "tomorrow.body": "Keep the important moment ready.",
+      "oneWeekBefore.title": "One week left",
+      "oneWeekBefore.body": "Review the upcoming moment.",
+      "oneMonthBefore.title": "One month left",
+      "oneMonthBefore.body": "A good time to plan ahead.",
+      "overdue.title": "A moment is overdue",
+      "overdue.body": "Check it safely in Momenta.",
+      "longTimeNoAction.title": "It has been a while",
+      "longTimeNoAction.body": "You can review your important moments."
+    },
+    insights: {
+      "upcomingMoment.label": "Upcoming moment",
+      "upcomingMoment.description": "Shows important dates coming soon.",
+      "overdueMoment.label": "Overdue moment",
+      "overdueMoment.description": "Gently highlights dates that passed.",
+      "quietCategory.label": "Quiet category",
+      "quietCategory.description": "Notices areas without recent additions.",
+      "longTimeNoAction.label": "Long pause",
+      "longTimeNoAction.description": "Suggests a good moment to reconnect.",
+      "weeklyRhythm.label": "Weekly rhythm",
+      "weeklyRhythm.description": "Summarizes the pace of the week."
+    },
+    monetization: {
+      "free.label": "Free",
+      "free.description": "A simple plan to begin.",
+      "weekly.label": "Weekly",
+      "weekly.description": "Unlock premium features weekly.",
+      "monthly.label": "Monthly",
+      "monthly.description": "Use the premium experience monthly.",
+      "lifetime.label": "Lifetime",
+      "lifetime.description": "Unlock Momenta permanently."
+    },
+    settingsSections: {
+      "appearance.label": "Appearance",
+      "appearance.description": "Manage theme preferences.",
+      "language.label": "Language",
+      "language.description": "Choose the app language.",
+      "notifications.label": "Notifications",
+      "notifications.description": "Manage reminder preferences.",
+      "widgets.label": "Widgets",
+      "widgets.description": "Adjust the widget experience.",
+      "privacy.label": "Privacy",
+      "privacy.description": "Manage privacy preferences.",
+      "data.label": "Data",
+      "data.description": "Import and export settings.",
+      "premium.label": "Premium",
+      "premium.description": "View premium status.",
+      "about.label": "About",
+      "about.description": "View app information."
+    },
+    errors: {
+      unknown: "Something went wrong.",
+      config: "App configuration could not be loaded.",
+      localization: "Language settings could not be loaded.",
+      featureDisabled: "This feature is currently unavailable.",
+      storageUnavailable: "Local storage is unavailable."
+    }
+  }
+} as const;
+
+export type TranslationResources = typeof resources;
+export type TranslationNamespace = keyof TranslationResources["en"];
