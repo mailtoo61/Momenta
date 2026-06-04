@@ -17,6 +17,7 @@ export type AppConfig = {
   storage: {
     sqliteDatabaseName: string;
     persistenceModeByEnvironment: Record<AppEnvironment, PersistenceMode>;
+    allowInMemoryFallbackOnPersistenceFailureByEnvironment: Record<AppEnvironment, boolean>;
   };
 };
 
@@ -35,6 +36,11 @@ export const appConfig: AppConfig = {
       development: "sqlite",
       preview: "inMemory",
       production: "inMemory"
+    },
+    allowInMemoryFallbackOnPersistenceFailureByEnvironment: {
+      development: false,
+      preview: false,
+      production: false
     }
   }
 };
